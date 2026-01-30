@@ -100,7 +100,7 @@ func (repo *ProductRepository) GetByIDDetails(id int) (*models.Product, error) {
 	query := "SELECT p.id, p.name, p.price, p.stock, c.name AS category_name FROM products p JOIN categories c ON p.category_id = c.id WHERE p.id = $1"
 
 	var p models.Product
-	err := repo.db.QueryRow(query, id).Scan(&p.ID, &p.Name, &p.Price, &p.Stock, &p.Category_ID)
+	err := repo.db.QueryRow(query, id).Scan(&p.ID, &p.Name, &p.Price, &p.Stock, &c.name)
 	if err == sql.ErrNoRows {
 		return nil, errors.New("produk tidak ditemukan")
 	}
