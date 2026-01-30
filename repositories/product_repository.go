@@ -99,8 +99,17 @@ func (repo *ProductRepository) GetByIDDetails(id int) (*models.Product, error) {
 	// query := "SELECT id, name, price, stock, category_id FROM products WHERE id = $1"
 	query := "SELECT p.id, p.name, p.price, p.stock, c.name AS category_name FROM products p JOIN categories c ON p.category_id = c.id WHERE p.id = $1"
 
-	var p models.Product
-	err := repo.db.QueryRow(query, id).Scan(&p.ID, &p.Name, &p.Price, &p.Stock, &p.Category_ID)
+	var product models.ProductDetail
+
+	err := repo.db.QueryRow(query, id).Scan(
+		&product.ID,
+		&product.Name,
+		&product.Price,
+		&product.Stock,
+		&product.CategoryName, // string
+	)
+	// var p models.Product
+	// err := repo.db.QueryRow(query, id).Scan(&p.ID, &p.Name, &p.Price, &p.Stock, &p.Category_ID)
 	if err == sql.ErrNoRows {
 		return nil, errors.New("produk tidak ditemukan")
 	}
@@ -108,5 +117,5 @@ func (repo *ProductRepository) GetByIDDetails(id int) (*models.Product, error) {
 		return nil, err
 	}
 
-	return &p, nil
+	return &product, nil
 }

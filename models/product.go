@@ -7,3 +7,11 @@ type Product struct {
 	Stock       int    `json:"stock"`
 	Category_ID int    `json:"category_id"`
 }
+
+type ProductDetail struct {
+	ID           int
+	Name         string
+	Price        int
+	Stock        int
+	CategoryName string
+}
