@@ -1,0 +1,5 @@
+kasir-api-details
+kasir-api-details.exe
+*.log
+.env
+.idea
