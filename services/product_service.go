@@ -34,5 +34,5 @@ func (s *ProductService) Delete(id int) error {
 }
 
 func (s *ProductService) GetByIDDetails(id int) (*models.Product, error) {
-	return s.repo.GetByID(id)
+	return s.repo.GetByIDDetails(id)
 }
