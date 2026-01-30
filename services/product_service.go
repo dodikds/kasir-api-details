@@ -33,6 +33,6 @@ func (s *ProductService) Delete(id int) error {
 	return s.repo.Delete(id)
 }
 
-func (s *ProductService) GetByIDDetails(id int) (*models.Product, error) {
+func (s *ProductService) GetByIDDetails(id int) (*models.ProductDetail, error) {
 	return s.repo.GetByIDDetails(id)
 }

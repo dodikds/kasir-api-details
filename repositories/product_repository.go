@@ -95,7 +95,7 @@ func (repo *ProductRepository) Delete(id int) error {
 }
 
 // GetByIDDetails - ambil produk by ID secara Detail
-func (repo *ProductRepository) GetByIDDetails(id int) (*models.Product, error) {
+func (repo *ProductRepository) GetByIDDetails(id int) (*models.ProductDetail, error) {
 	// query := "SELECT id, name, price, stock, category_id FROM products WHERE id = $1"
 	query := "SELECT p.id, p.name, p.price, p.stock, c.name AS category_name FROM products p JOIN categories c ON p.category_id = c.id WHERE p.id = $1"
 
