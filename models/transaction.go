@@ -30,7 +30,7 @@ type ProdukTerlaris struct {
 }
 
 type ReportHariIni struct {
-	TotalRevenue   int            `json:"total_revenue"`
-	TotalTransaksi int            `json:"total_transaksi"`
-	ProdukTerlaris *ProductDetail `json:"produk_terlaris"`
+	TotalRevenue   int             `json:"total_revenue"`
+	TotalTransaksi int             `json:"total_transaksi"`
+	ProdukTerlaris *ProdukTerlaris `json:"produk_terlaris"`
 }
