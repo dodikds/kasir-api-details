@@ -34,3 +34,11 @@ type ReportHariIni struct {
 	TotalTransaksi int             `json:"total_transaksi"`
 	ProdukTerlaris *ProdukTerlaris `json:"produk_terlaris"`
 }
+
+type ReportRange struct {
+	StartDate      string          `json:"start_date"`
+	EndDate        string          `json:"end_date"`
+	TotalRevenue   int             `json:"total_revenue"`
+	TotalTransaksi int             `json:"total_transaksi"`
+	ProdukTerlaris *ProdukTerlaris `json:"produk_terlaris"`
+}

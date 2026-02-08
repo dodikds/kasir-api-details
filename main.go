@@ -59,6 +59,9 @@ func main() {
 	// Routing GET /api/report/hari-ini
 	http.HandleFunc("/api/report/hari-ini", handlers.GetReportHariIni(db))
 
+	// Routing GET /api/report?start_date=2026-01-01&end_date=2026-02-01
+	http.HandleFunc("/api/report", handlers.GetReportRange(db))
+
 	transactionRepo := repositories.NewTransactionRepository(db)
 	transactionService := services.NewTransactionService(transactionRepo)
 	transactionHandler := handlers.NewTransactionHandler(transactionService)

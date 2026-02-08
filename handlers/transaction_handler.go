@@ -100,3 +100,70 @@ func GetReportHariIni(db *sql.DB) http.HandlerFunc {
 		json.NewEncoder(w).Encode(report)
 	}
 }
+
+func GetReportRange(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		startDate := r.URL.Query().Get("start_date")
+		endDate := r.URL.Query().Get("end_date")
+
+		if startDate == "" || endDate == "" {
+			http.Error(w, "start_date dan end_date wajib diisi (YYYY-MM-DD)", http.StatusBadRequest)
+			return
+		}
+
+		var report models.ReportRange
+		report.StartDate = startDate
+		report.EndDate = endDate
+
+		// 1. Total revenue & transaksi
+		totalQuery := `
+		SELECT
+		  COALESCE(SUM(td.subtotal), 0),
+		  COUNT(DISTINCT t.id)
+		FROM transactions t
+		JOIN transaction_details td
+		  ON t.id = td.transaction_id
+		WHERE t.created_at >= ($1::date AT TIME ZONE 'Asia/Jakarta') AT TIME ZONE 'UTC'
+		  AND t.created_at <  ($2::date AT TIME ZONE 'Asia/Jakarta') AT TIME ZONE 'UTC'
+		`
+
+		err := db.QueryRow(totalQuery, startDate, endDate).
+			Scan(&report.TotalRevenue, &report.TotalTransaksi)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// 2. Produk terlaris
+		bestProductQuery := `
+		SELECT
+		  p.name,
+		  SUM(td.quantity)
+		FROM transaction_details td
+		JOIN transactions t ON t.id = td.transaction_id
+		JOIN products p ON p.id = td.product_id
+		WHERE t.created_at >= ($1::date AT TIME ZONE 'Asia/Jakarta') AT TIME ZONE 'UTC'
+		  AND t.created_at <  ($2::date AT TIME ZONE 'Asia/Jakarta') AT TIME ZONE 'UTC'
+		GROUP BY p.id, p.name
+		ORDER BY SUM(td.quantity) DESC
+		LIMIT 1
+		`
+
+		var produk models.ProdukTerlaris
+		err = db.QueryRow(bestProductQuery, startDate, endDate).
+			Scan(&produk.Nama, &produk.QtyTerjual)
+
+		if err == sql.ErrNoRows {
+			report.ProdukTerlaris = nil
+		} else if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		} else {
+			report.ProdukTerlaris = &produk
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(report)
+	}
+}
