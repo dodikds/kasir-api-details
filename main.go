@@ -56,6 +56,9 @@ func main() {
 	http.HandleFunc("/api/produk/", productHandler.HandleProductByID)
 	http.HandleFunc("/api/produk/details/", productHandler.HandleProductByIDDetails)
 
+	// Routing GET /api/report/hari-ini
+	http.HandleFunc("/api/report/hari-ini", handlers.GetReportHariIni(db))
+
 	transactionRepo := repositories.NewTransactionRepository(db)
 	transactionService := services.NewTransactionService(transactionRepo)
 	transactionHandler := handlers.NewTransactionHandler(transactionService)
